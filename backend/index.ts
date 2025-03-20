@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from 'dotenv';
 import bodyParser from "body-parser";
 import { router } from "./routes/routes";
+import sequelize from "./config/database";
 
 dotenv.config();
 
@@ -14,6 +15,13 @@ app.use(bodyParser.json());
 
 app.use("/api", router);
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+sequelize.sync()
+  .then(() => {
+    console.log('Connected to MySQL database');
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Unable to connect to the database:', err);
+  });
