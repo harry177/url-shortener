@@ -1,3 +1,4 @@
+import { Clicks } from "../models/clickModel";
 import { Urls } from "../models/urlModel";
 import { IUrl } from "../models/types";
 import { Request, Response } from "express";
@@ -46,9 +47,16 @@ export const redirectToOriginalUrl = async (req: Request<{ shortUrl: Pick<IUrl, 
       return void res.status(410).json({ error: 'Shortened URL has expired' });
     }
 
-    // Implement redirect to originalUrl
-    if (url.originalUrl) {
+    if (url.id && url.originalUrl) {
+
+      // Implement redirect to originalUrl
       res.status(200).json({originalUrl: url.originalUrl})
+
+      // Add record of click data
+      await Clicks.create({
+        shortUrlId: url.id,
+        ipAddress: req.socket.remoteAddress || '',
+      });
     }
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });

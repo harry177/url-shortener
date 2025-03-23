@@ -1,4 +1,3 @@
-//import { RowDataPacket } from "mysql2";
 import { Model, InferAttributes, InferCreationAttributes } from "sequelize";
 
 export interface IUrl extends Model<InferAttributes<IUrl>, InferCreationAttributes<IUrl>> {
@@ -7,4 +6,10 @@ export interface IUrl extends Model<InferAttributes<IUrl>, InferCreationAttribut
   shortUrl?: string;
   expiresAt?: Date;
   alias?: string;
+};
+
+export interface IClick extends Model<InferAttributes<IClick>, InferCreationAttributes<IClick>> {
+  id?: number;
+  shortUrlId: number;
+  ipAddress: string;
 }
