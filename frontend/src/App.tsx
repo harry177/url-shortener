@@ -1,25 +1,15 @@
-import { ChangeEvent, useState } from 'react';
-import { createShortUrl } from './api/requests';
-import './App.css'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CreationForm } from "./components/CreationForm/CreationForm";
+import "./App.css";
+
+const queryClient = new QueryClient();
 
 function App() {
-
-  const [originalUrl, setOriginalUrl] = useState("");
-
-  const handleUrlInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setOriginalUrl(event.target.value);
-  };
-
-  const handleUrlCreation = () => {
-    createShortUrl(originalUrl);
-  };
-
   return (
-    <>
-      <input onChange={handleUrlInput} value={originalUrl}></input>
-      <button onClick={handleUrlCreation}>Submit</button>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <CreationForm />
+    </QueryClientProvider>
   );
 }
 
-export default App
+export default App;

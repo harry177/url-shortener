@@ -1,7 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database";
+import { IUrl } from "./types";
 
-export const Urls = sequelize.define("new_urls", {
+export const Urls = sequelize.define<IUrl>("new_urls", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -9,7 +10,7 @@ export const Urls = sequelize.define("new_urls", {
     allowNull: false,
   },
   originalUrl: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   expiresAt: {
@@ -20,4 +21,8 @@ export const Urls = sequelize.define("new_urls", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  shortUrl: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
 });
