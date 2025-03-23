@@ -12,5 +12,9 @@ export interface ShortUrlResponse extends ShortUrlData {
 export interface RedirectUrlResponse {
   originalUrl: string | null;
   error?: string;
-  
+}
+
+export interface InfoUrlResponse extends RedirectUrlResponse {
+  createdAt?: string;
+  clickCount?: number;
 }

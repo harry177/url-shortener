@@ -3,6 +3,7 @@ import { Urls } from "../models/urlModel";
 import { IUrl } from "../models/types";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
+import sequelize from "../config/database";
 
 export const createShortUrl = async (req: Request<{ newUrlParams: Partial<IUrl>}>, res: Response) => {
   try {
@@ -81,5 +82,34 @@ export const deleteShortUrl = async (req: Request<{ shortUrl: Pick<IUrl, "shortU
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error deleting short URL' });
+  }
+};
+
+export const getUrlInfo = async (req: Request<{ shortUrl: Pick<IUrl, "shortUrl"> }>, res: Response) => {
+  try {
+    const { shortUrl } = req.params;
+    const url = await Urls.findOne({
+      where: { shortUrl },
+      
+    });
+
+    if (!url) {
+      return void res.status(404).json({ error: 'URL not found' });
+    }
+
+    const { originalUrl, createdAt } = url;
+
+    const clickCount = await Clicks.count({
+      where: { shortUrlId: url.id },
+    });
+
+    res.status(200).json({
+      originalUrl,
+      createdAt,
+      clickCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error getting URL info' });
   }
 };
