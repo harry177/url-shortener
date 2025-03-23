@@ -54,3 +54,24 @@ export const redirectToOriginalUrl = async (req: Request<{ shortUrl: Pick<IUrl, 
     res.status(500).json({ error: (error as Error).message });
   }
 };
+
+export const deleteShortUrl = async (req: Request<{ shortUrl: Pick<IUrl, "shortUrl"> }>, res: Response) => {
+  try {
+    const { shortUrl } = req.params;
+
+    const deletedCount = await Urls.destroy({
+      where: {
+        shortUrl
+      }
+    });
+
+    if (deletedCount === 0) {
+      return void res.status(404).json({ error: 'Short URL not found' });
+    }
+
+    res.status(204).end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error deleting short URL' });
+  }
+};

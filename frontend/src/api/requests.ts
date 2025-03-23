@@ -10,3 +10,7 @@ export const redirectUrl = async (shortUrl: string): Promise<RedirectUrlResponse
   const response = await apiClient.get(`/${shortUrl}`);
   return response.data;
 }
+
+export const deleteUrl = async (shortUrl: string): Promise<void> => {
+  await apiClient.delete(`/delete/${shortUrl}`);
+};
