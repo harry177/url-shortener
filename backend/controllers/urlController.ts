@@ -3,7 +3,7 @@ import { Urls } from "../models/urlModel";
 import { IUrl } from "../models/types";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
-import sequelize from "../config/database";
+
 
 export const createShortUrl = async (req: Request<{ newUrlParams: Partial<IUrl>}>, res: Response) => {
   try {
@@ -67,6 +67,14 @@ export const redirectToOriginalUrl = async (req: Request<{ shortUrl: Pick<IUrl, 
 export const deleteShortUrl = async (req: Request<{ shortUrl: Pick<IUrl, "shortUrl"> }>, res: Response) => {
   try {
     const { shortUrl } = req.params;
+
+    const url = await Urls.findOne({ where: { shortUrl } });
+
+    await Clicks.destroy({
+      where: {
+        shortUrlId: url?.id,
+      },
+    });
 
     const deletedCount = await Urls.destroy({
       where: {
