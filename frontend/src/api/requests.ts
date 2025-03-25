@@ -1,5 +1,5 @@
 import { apiClient } from "./instance";
-import { InfoUrlResponse, RedirectUrlResponse, ShortUrlData, ShortUrlResponse } from "./types";
+import { AnalyticsResponse, InfoUrlResponse, RedirectUrlResponse, ShortUrlData, ShortUrlResponse } from "./types";
 
 export const createShortUrl = async (data: ShortUrlData): Promise<ShortUrlResponse> => {
   const response = await apiClient.post("/shorten", data);
@@ -19,3 +19,8 @@ export const getUrlInfo = async (shortUrl: string): Promise<InfoUrlResponse> => 
   const response = await apiClient.get(`/info/${shortUrl}`);
   return response.data;
 }
+
+export const getAnalytics = async (shortUrl: string): Promise<AnalyticsResponse> => {
+  const response = await apiClient.get(`/analytics/${shortUrl}`);
+  return response.data;
+};

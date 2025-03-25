@@ -98,7 +98,6 @@ export const getUrlInfo = async (req: Request<{ shortUrl: Pick<IUrl, "shortUrl">
     const { shortUrl } = req.params;
     const url = await Urls.findOne({
       where: { shortUrl },
-      
     });
 
     if (!url) {
@@ -119,5 +118,41 @@ export const getUrlInfo = async (req: Request<{ shortUrl: Pick<IUrl, "shortUrl">
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error getting URL info' });
+  }
+};
+
+export const getAnalytics = async (req: Request<{ shortUrl: Pick<IUrl, "shortUrl"> }>, res: Response) => {
+  try {
+    const { shortUrl } = req.params;
+    const url = await Urls.findOne({
+      where: { shortUrl },
+    });
+
+    console.log(url)
+
+    if (!url) {
+      return void res.status(404).json({ error: 'URL not found' });
+    }
+
+    const clickCount = await Clicks.count({
+      where: { shortUrlId: url.id },
+    });
+
+    const relatedClicks = await Clicks.findAll({
+      where: { shortUrlId: url.id },
+      attributes: ["ipAddress"],
+      order: [["id", "DESC"]],
+      limit: 5,
+    });
+
+    const ipAddresses = relatedClicks.map((click) => click.ipAddress);
+
+    res.status(200).json({
+      ipAddresses,
+      clickCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error getting Analytics info' });
   }
 };

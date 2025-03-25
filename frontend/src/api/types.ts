@@ -18,3 +18,8 @@ export interface InfoUrlResponse extends RedirectUrlResponse {
   createdAt?: string;
   clickCount?: number;
 }
+
+export interface AnalyticsResponse {
+  clickCount?: number;
+  ipAddresses?: string[];
+}
