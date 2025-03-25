@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, Button, TextField } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import {
@@ -17,9 +17,9 @@ export const InfoForm = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [shortUrl, setShortUrl] = useState("");
-  //const [infoUrlSuccess, setInfoUrlSuccess] = useState("");
-  //const [infoUrlError, setInfoUrlError] = useState("");
 
+  const queryClient = useQueryClient();
+  
   const {
     formState: { errors, isValid },
     control,
@@ -30,16 +30,28 @@ export const InfoForm = () => {
     resolver: zodResolver(InfoFormSchema),
   });
 
-  const { data, error } = useQuery<
+  const { data, error, refetch } = useQuery<
     InfoUrlResponse,
     AxiosError<{ error: string }>
   >({
     queryKey: ["info", shortUrl],
-    queryFn: () => {
+    queryFn: async () => {
+      const shortUrl = queryClient.getQueryData<string>(["currentShortUrl"]);
+      if (!shortUrl) throw new Error("No short URL provided");
       return getUrlInfo(shortUrl);
     },
     retry: false,
+    enabled: false,
+    staleTime: 0,
+    gcTime: 0
   });
+
+  useEffect(() => {
+    if (shortUrl) {
+      refetch();
+      setShortUrl("");
+    }
+  }, [shortUrl]);
 
   useEffect(() => {
     if (!isValid && isClicked) {
@@ -59,7 +71,8 @@ export const InfoForm = () => {
     const transformedUrl = data.shortUrlLabel.slice(
       data.shortUrlLabel.lastIndexOf("/") + 1
     );
-    setShortUrl(transformedUrl);
+    queryClient.setQueryData(["currentShortUrl"], transformedUrl);
+    refetch();
   };
 
   return (
@@ -87,15 +100,18 @@ export const InfoForm = () => {
       >
         Get info
       </Button>
-      {/*{infoUrlSuccess && <Alert severity="success">{infoUrlSuccess}</Alert>}
-      {infoUrlError && <Alert severity="error">{infoUrlError}</Alert>} */}
-      
-      {data && <Alert severity="success">{<ul>
-        <li>{data.originalUrl}</li>
-        <li>{data.createdAt}</li>
-        <li>{data.clickCount}</li>
-        </ul>}</Alert>}
-      {error && <Alert severity="error">{error.response?.data.error}</Alert>}
+
+      {error ? (
+        <Alert severity="error">{error.response?.data.error}</Alert>
+      ) : data ? (
+        <Alert severity="success">
+          <ul>
+            <li>{data.originalUrl}</li>
+            <li>{data.createdAt}</li>
+            <li>{data.clickCount}</li>
+          </ul>
+        </Alert>
+      ) : null}
     </form>
   );
 };

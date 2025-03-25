@@ -49,6 +49,7 @@ export const CreationForm = () => {
       return redirectUrl(shortUrlParams);
     },
     retry: false,
+    enabled: Boolean(shortUrlParams),
   });
 
   const { mutate } = useMutation<
