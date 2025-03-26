@@ -71,7 +71,7 @@ export const AnalyticsForm = () => {
   };
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit(handleForm)}>
+    <form className="form" onSubmit={handleSubmit(handleForm)}>
       <div className="form-input__block">
         <label>Short url</label>
         <Controller
@@ -91,6 +91,7 @@ export const AnalyticsForm = () => {
         type="submit"
         variant="contained"
         disabled={isDisabled}
+        className="button"
         onClick={() => setIsClicked(true)}
       >
         Show report
@@ -99,13 +100,14 @@ export const AnalyticsForm = () => {
       {error ? (
         <Alert severity="error">{error.response?.data.error}</Alert>
       ) : data ? (
-        <Alert severity="success">
+        <Alert severity="success" className="alert-list">
+          <p>Last IP addresses:</p>
           <ul>
             {data.ipAddresses?.map((address, index) => (
               <li key={index}>{address}</li>
             ))}
           </ul>
-          <p>{data.clickCount}</p>
+          <p>{`Click count: ${data.clickCount}`}</p>
         </Alert>
       ) : null}
     </form>

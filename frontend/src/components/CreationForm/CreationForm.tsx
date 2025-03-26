@@ -59,7 +59,6 @@ export const CreationForm = () => {
   >({
     mutationFn: createShortUrl,
     onSuccess: (response) => {
-      console.log(response);
       setShortUrl(response.shortUrl);
       setShortUrlError("");
     },
@@ -112,7 +111,7 @@ export const CreationForm = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
-      <form className="auth-form" onSubmit={handleSubmit(handleForm)}>
+      <form className="form" onSubmit={handleSubmit(handleForm)}>
         <div className="form-input__block">
           <label>Original url</label>
           <Controller
@@ -168,6 +167,7 @@ export const CreationForm = () => {
           type="submit"
           variant="contained"
           disabled={isDisabled}
+          className="button"
           onClick={() => setIsClicked(true)}
         >
           Submit
@@ -175,6 +175,7 @@ export const CreationForm = () => {
       </form>
       {shortUrl && (
         <Alert severity="success">
+          <p>Short URL was created:</p>
           <Link href={shortUrl}>{shortUrl}</Link>
         </Alert>
       )}

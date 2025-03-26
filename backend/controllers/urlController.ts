@@ -25,7 +25,7 @@ export const createShortUrl = async (req: Request<{ newUrlParams: Partial<IUrl>}
     }
 
     const createdUrl = await Urls.create({ originalUrl, expiresAt, alias, shortUrl });
-    res.status(201).json({ id: createdUrl.id, originalUrl, shortUrl: `http://localhost:5173/${createdUrl.shortUrl}` });
+    res.status(201).json({ shortUrl: `http://localhost:5173/${createdUrl.shortUrl}` });
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: (error as Error).message });
@@ -54,9 +54,11 @@ export const redirectToOriginalUrl = async (req: Request<{ shortUrl: Pick<IUrl, 
       res.status(200).json({originalUrl: url.originalUrl})
 
       // Add record of click data
+      const ip = req.headers["cf-connecting-ip"] || req.headers["x-real-ip"] || req.headers["x-forwarded-for"];
+
       await Clicks.create({
         shortUrlId: url.id,
-        ipAddress: req.socket.remoteAddress || '',
+        ipAddress: (Array.isArray(ip) ? ip[0] : ip) || req.socket.remoteAddress || '',
       });
     }
   } catch (error) {

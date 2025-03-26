@@ -10,6 +10,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set("trust proxy", true);
+
 app.use(cors());
 app.use((req, res, next) => {  
   res.setHeader('Access-Control-Allow-Headers', '*');  

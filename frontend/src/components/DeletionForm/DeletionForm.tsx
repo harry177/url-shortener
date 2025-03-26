@@ -30,8 +30,7 @@ export const DeletionForm = () => {
 
   const { mutate } = useMutation({
     mutationFn: deleteUrl,
-    onSuccess: (response) => {
-      console.log(response);
+    onSuccess: () => {
       setDeleteUrlSuccess("Short url deleted sucessfully!");
       setDeleteUrlError("");
     },
@@ -69,7 +68,7 @@ export const DeletionForm = () => {
   };
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit(handleForm)}>
+    <form className="form" onSubmit={handleSubmit(handleForm)}>
       <div className="form-input__block">
         <label>Short url</label>
         <Controller
@@ -89,6 +88,7 @@ export const DeletionForm = () => {
         type="submit"
         variant="contained"
         disabled={isDisabled}
+        className="button"
         onClick={() => setIsClicked(true)}
       >
         Delete

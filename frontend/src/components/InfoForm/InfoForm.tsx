@@ -76,7 +76,7 @@ export const InfoForm = () => {
   };
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit(handleForm)}>
+    <form className="form" onSubmit={handleSubmit(handleForm)}>
       <div className="form-input__block">
         <label>Short url</label>
         <Controller
@@ -96,6 +96,7 @@ export const InfoForm = () => {
         type="submit"
         variant="contained"
         disabled={isDisabled}
+        className="button"
         onClick={() => setIsClicked(true)}
       >
         Get info
@@ -104,12 +105,10 @@ export const InfoForm = () => {
       {error ? (
         <Alert severity="error">{error.response?.data.error}</Alert>
       ) : data ? (
-        <Alert severity="success">
-          <ul>
-            <li>{data.originalUrl}</li>
-            <li>{data.createdAt}</li>
-            <li>{data.clickCount}</li>
-          </ul>
+        <Alert severity="success" className="alert-list">
+          <p>{`Original URL: ${data.originalUrl}`}</p>
+          <p>{`Short URL was created at: ${data.createdAt}`}</p>
+          <p>{`Click count: ${data.clickCount}`}</p>
         </Alert>
       ) : null}
     </form>
