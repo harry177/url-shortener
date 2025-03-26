@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 
 app.use("/api", router);
 
+if (process.env.NODE_ENV !== "test") {
 sequelize.sync()
   .then(() => {
     console.log('Connected to MySQL database');
@@ -29,3 +30,6 @@ sequelize.sync()
   .catch((err) => {
     console.error('Unable to connect to the database:', err);
   });
+}
+
+export default app;
