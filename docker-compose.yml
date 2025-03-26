@@ -21,17 +21,23 @@ services:
       - DB_PORT=3306
       - DB_NAME=url_shortener
       - DB_USER=root
-      - DB_PASS=password
+      - DB_PASSWORD=password
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: mysql:8.0
+    restart: always
     environment:
       - MYSQL_DATABASE=url_shortener
       - MYSQL_ROOT_PASSWORD=password
     volumes:
       - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
 
 volumes:
   mysql-data:
